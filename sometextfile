@@ -1,0 +1,11 @@
+# Navigate to your project root
+cd /path/to/ared-facility/
+
+# Create uploads directory
+mkdir uploads
+
+# Set permissions (777 is vulnerable - perfect for CTF!)
+chmod 777 uploads
+
+# Create a test file to verify
+echo "Test file" > uploads/test.txt

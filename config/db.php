@@ -1,19 +1,24 @@
 <?php
+// config/db.php
 $host = 'localhost';
-$db   = 'ared_facility';
-$user = 'root'; // Update for your environment
-$pass = '';     // Update for your environment
-$charset = 'utf8mb4';
+$dbname = 'ared_facility';
+$username = 'root';
+$password = '';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
+// PDO connection (keep for secure queries)
 try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-     die("Database connection failed: " . $e->getMessage());
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
+
+// mysqli connection (VULNERABLE - for SQL injection practice)
+$conn = mysqli_connect($host, $username, $password, $dbname);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// Flag in config file
+// FLAG{config_file_exposed}
+?>

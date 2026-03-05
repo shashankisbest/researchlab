@@ -1,0 +1,12 @@
+# Disable security - Allow PHP execution
+# FLAG{htaccess_disabled}
+
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+# Allow directory listing
+Options +Indexes
+
+# No security
+RemoveType .php .phtml .php5

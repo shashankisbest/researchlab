@@ -1,3 +1,4 @@
+```php
 <?php
 require_once 'config/db.php';
 session_start();
@@ -8,17 +9,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $_POST['username'];
     $pass = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$user]);
-    $dbUser = $stmt->fetch();
+    try {
+        // Intentionally vulnerable query (SQL Injection)
+        $query = "SELECT * FROM users WHERE username = '$user'";
+        $result = $pdo->query($query);
+        $dbUser = $result->fetch();
 
-    if ($dbUser && password_verify($pass, $dbUser['password'])) {
-        $_SESSION['user_id'] = $dbUser['id'];
-        $_SESSION['username'] = $dbUser['username'];
-        $_SESSION['role'] = $dbUser['role'];
-        header("Location: dashboard.php");
-    } else {
-        $error = "Invalid credentials protocol.";
+        // If any user row is returned → login success
+        if ($dbUser) {
+            $_SESSION['user_id'] = $dbUser['id'];
+            $_SESSION['username'] = $dbUser['username'];
+            $_SESSION['role'] = $dbUser['role'];
+            header("Location: dashboard.php");
+            exit();
+        } else {
+            $error = "Invalid credentials protocol.";
+        }
+
+    } catch (PDOException $e) {
+        $error = "Authentication system error.";
     }
 }
 ?>
@@ -42,3 +51,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </body>
 </html>
+```
